@@ -18,6 +18,7 @@ public class PlayerScript : MonoBehaviour
     private float speed = 5.0f;
     private float xAxis = 0.0f;
     private float yAxis = 0.0f;
+    private bool boostInput = false;
     private Vector3 forceVector = new Vector3(0.0f, 0.0f, 0.0f);
     private float rAngle = 0.0f;
     // Score
@@ -67,7 +68,11 @@ public class PlayerScript : MonoBehaviour
         // If movement has changed
         if (xAxis != 0 || yAxis != 0)
         {
+            transform.rotation = Quaternion.Euler(0.0F, 0.0F, 0.0F);
+            float dotProduct = (Vector3.up.x * forceVector.x + Vector3.up.y * forceVector.y);
+            float cosTheta = (dotProduct) / (forceVector.magnitude);
             // Make it rotate
+            transform.RotateAround(transform.position, Vector3.forward, Mathf.Rad2Deg * -Mathf.Acos(cosTheta) * Mathf.Sign(forceVector.x));
         }
     }
 
