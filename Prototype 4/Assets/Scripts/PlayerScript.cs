@@ -103,6 +103,20 @@ public class PlayerScript : MonoBehaviour
             // On same team
             if (collision.collider.GetComponent<BaseScript>().team == team)
             {
+                // If player has some score to bank
+                if (score != 0)
+                {
+                    // Bank score
+                    collision.collider.GetComponent<BaseScript>().totalScore += score;
+
+                    // Empty score
+                    score = 0;
+                }
+            }
+            // Enemy base
+            else
+            {
+                // Take 10% of enemy points
 
             }
         }
