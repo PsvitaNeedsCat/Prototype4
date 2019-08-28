@@ -18,7 +18,8 @@ public class PlayerScript : MonoBehaviour
     private float speed = 5.0f;
     private float xAxis = 0.0f;
     private float yAxis = 0.0f;
-    private Vector2 forceVector = new Vector2(0.0f, 0.0f);
+    private Vector3 forceVector = new Vector3(0.0f, 0.0f, 0.0f);
+    private float rAngle = 0.0f;
 
     private void FixedUpdate()
     {
@@ -41,7 +42,7 @@ public class PlayerScript : MonoBehaviour
             yAxis = Input.GetAxisRaw("Vertical2");
         }
 
-        forceVector = new Vector3(xAxis, yAxis);
+        forceVector = new Vector3(xAxis, yAxis, 0.0f);
 
         this.GetComponent<Rigidbody2D>().AddForce(forceVector.normalized * speed);
     }
@@ -51,7 +52,7 @@ public class PlayerScript : MonoBehaviour
         // If movement has changed
         if (xAxis != 0 || yAxis != 0)
         {
-            this.GetComponent<Rigidbody2D>().rotation = Quaternion.Euler(forceVector.normalized).z;
+            // Make it rotate
         }
     }
 }
