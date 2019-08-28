@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AsteroidScript : MonoBehaviour
 {
-    // public values
+    // Public
     public enum AsteroidSize
     {
         Small,
@@ -12,15 +12,15 @@ public class AsteroidScript : MonoBehaviour
     }
     public AsteroidSize size;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
-        
-    }
+        if (size == AsteroidSize.Large)
+        {
+            // Set scale
+            this.transform.localScale *= 2;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+            // Set mass
+            this.GetComponent<Rigidbody2D>().mass *= 2;
+        }
     }
 }
