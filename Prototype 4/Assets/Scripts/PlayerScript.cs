@@ -20,7 +20,6 @@ public class PlayerScript : MonoBehaviour
     private float yAxis = 0.0f;
     private bool boostInput = false;
     private Vector3 forceVector = new Vector3(0.0f, 0.0f, 0.0f);
-    private float rAngle = 0.0f;
     // Score
     private int score = 0;
     private int largeAsteroidVal = 25;
@@ -38,10 +37,7 @@ public class PlayerScript : MonoBehaviour
         {
             Charge();
         }
-        else
-        {
-            IncreaseChargeMeter();
-        }
+        IncreaseChargeMeter();
     }
 
     private void Movement()
@@ -92,7 +88,11 @@ public class PlayerScript : MonoBehaviour
 
     private void Charge()
     {
-
+        if (chargeMeter == 10.0F)
+        {
+            chargeMeter = 0.0F;
+            // do the charge
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
