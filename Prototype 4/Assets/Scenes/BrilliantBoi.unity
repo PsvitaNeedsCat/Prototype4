@@ -173,7 +173,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 15
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -270,6 +270,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3601820088972406881, guid: 10b334c5b0504c24e9d7b3f95e61cd94,
+        type: 3}
+      propertyPath: m_Constraints
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3601820088972406883, guid: 10b334c5b0504c24e9d7b3f95e61cd94,
+        type: 3}
+      propertyPath: m_Offset.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3601820088972406883, guid: 10b334c5b0504c24e9d7b3f95e61cd94,
+        type: 3}
+      propertyPath: m_Radius
+      value: 0.42
+      objectReference: {fileID: 0}
+    - target: {fileID: 3601820088972406911, guid: 10b334c5b0504c24e9d7b3f95e61cd94,
+        type: 3}
+      propertyPath: chargeMeter
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 10b334c5b0504c24e9d7b3f95e61cd94, type: 3}
 --- !u!1 &1681248984
@@ -288,7 +308,7 @@ GameObject:
   - component: {fileID: 1681248985}
   m_Layer: 0
   m_Name: Sphere
-  m_TagString: Untagged
+  m_TagString: Asteroid
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -305,7 +325,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85726ea360bca6d40b29c9a739ee487f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  size: 0
+  size: 1
 --- !u!50 &1681248986
 Rigidbody2D:
   serializedVersion: 4
@@ -319,7 +339,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 5
-  m_LinearDrag: 20
+  m_LinearDrag: 5
   m_AngularDrag: 0
   m_GravityScale: 0
   m_Material: {fileID: 0}
@@ -396,7 +416,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1681248984}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 1.79, y: 1.27, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

@@ -15,16 +15,25 @@ public class PlayerScript : MonoBehaviour
     public TeamColour team;
 
     // Private
-    private float speed = 5.0f;
+    private float speed = 300.0f;
     private float xAxis = 0.0f;
     private float yAxis = 0.0f;
     private bool boostInput = false;
     private Vector3 forceVector = new Vector3(0.0f, 0.0f, 0.0f);
+    private Rigidbody2D playerBody;
+    private float breakSpeed = 1.0F;
     // Score
     private int score = 0;
     private int largeAsteroidVal = 25;
     private int smallAsteroidVal = 10;
-    private float chargeMeter = 0.0f;
+    public float chargeMeter = 2.0F;
+    public float chargeFull = 2.0F;
+
+    private void Awake()
+    {
+        playerBody = this.GetComponent<Rigidbody2D>();
+    }
+
 
     private void FixedUpdate()
     {
@@ -32,11 +41,8 @@ public class PlayerScript : MonoBehaviour
 
         CheckRotation();
 
-        // Charge
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Charge();
-        }
+        if (1.0F == Input.GetAxisRaw("Boost") && chargeMeter >= chargeFull) { Charge(); }
+
         IncreaseChargeMeter();
     }
 
@@ -56,7 +62,7 @@ public class PlayerScript : MonoBehaviour
 
         forceVector = new Vector3(xAxis, yAxis, 0.0f);
 
-        this.GetComponent<Rigidbody2D>().AddForce(forceVector.normalized * speed);
+        playerBody.AddForce(forceVector.normalized * Time.fixedDeltaTime * speed);
     }
 
     private void CheckRotation()
@@ -64,22 +70,34 @@ public class PlayerScript : MonoBehaviour
         // If movement has changed
         if (xAxis != 0 || yAxis != 0)
         {
+            Vector3 velocityDirection = playerBody.velocity.normalized;
+            Vector3 lookDirection = forceVector.normalized;
+            if (velocityDirection.magnitude > 0)
+            {
+                lookDirection = velocityDirection;
+            }
+
+            // make the object face up
             transform.rotation = Quaternion.Euler(0.0F, 0.0F, 0.0F);
-            float dotProduct = (Vector3.up.x * forceVector.x + Vector3.up.y * forceVector.y);
-            float cosTheta = (dotProduct) / (forceVector.magnitude);
+            
+            // calculate the difference between up and the direction we want to look in
+            float dotProduct = (Vector3.up.x * lookDirection.x + Vector3.up.y * lookDirection.y);
+            float cosTheta = (dotProduct) / (lookDirection.magnitude);
             // Make it rotate
-            transform.RotateAround(transform.position, Vector3.forward, Mathf.Rad2Deg * -Mathf.Acos(cosTheta) * Mathf.Sign(forceVector.x));
+            float degTheta = Mathf.Rad2Deg * Mathf.Acos(cosTheta) * -Mathf.Sign(lookDirection.x);
+            // rotate the player by degTheta around their position, along the axis defined by the forward vector.
+            transform.RotateAround(transform.position, Vector3.forward, degTheta);
         }
     }
 
     private void IncreaseChargeMeter()
     {
         // Truncate
-        if (chargeMeter > 10.0f)
+        if (chargeMeter > chargeFull)
         {
-            chargeMeter = 10.0f;
+            chargeMeter = chargeFull;
         }
-        else
+        else if (chargeMeter < chargeFull)
         {
             // Increment
             chargeMeter += Time.fixedDeltaTime;
@@ -88,11 +106,9 @@ public class PlayerScript : MonoBehaviour
 
     private void Charge()
     {
-        if (chargeMeter == 10.0F)
-        {
-            chargeMeter = 0.0F;
-            // do the charge
-        }
+        chargeMeter = 0.0F;
+        // do the charge
+        playerBody.AddForce(this.transform.up.normalized * Time.fixedDeltaTime * speed * 150.0F);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -104,6 +120,26 @@ public class PlayerScript : MonoBehaviour
             if (collision.collider.GetComponent<BaseScript>().team == team)
             {
 
+            }
+        }
+
+        // Collided with asteroid
+        if (collision.collider.tag == "Asteroid")
+        {
+            // On same team
+            if (playerBody.velocity.magnitude >= breakSpeed)
+            {
+                AsteroidScript script = collision.gameObject.GetComponent<AsteroidScript>();
+                // Destroy the asteroid.
+                if (script.size == AsteroidScript.AsteroidSize.Small)
+                {
+                    score += 25;
+                }
+                else
+                {
+                    score += 100;
+                }
+                Destroy(collision.gameObject);
             }
         }
     }
