@@ -22,6 +22,7 @@ public class PlayerScript : MonoBehaviour
     private Vector3 forceVector = new Vector3(0.0f, 0.0f, 0.0f);
     private Rigidbody2D playerBody;
     private float breakSpeed = 1.0F;
+    private TextMesh chargeTxt;
     // Score
     private int score = 0;
     private int largeAsteroidVal = 25;
@@ -32,6 +33,11 @@ public class PlayerScript : MonoBehaviour
     private void Awake()
     {
         playerBody = this.GetComponent<Rigidbody2D>();
+
+        if (GameObject.Find("ChargeTxt"))
+        {
+            chargeTxt = GameObject.Find("ChargeTxt").GetComponent<TextMesh>();
+        }
     }
 
 
@@ -44,6 +50,21 @@ public class PlayerScript : MonoBehaviour
         if (1.0F == Input.GetAxisRaw("Boost") && chargeMeter >= chargeFull) { Charge(); }
 
         IncreaseChargeMeter();
+
+        UpdateChargeText();
+    }
+
+    // TEMP //
+    private void UpdateChargeText()
+    {
+        if (chargeMeter == chargeFull)
+        {
+            chargeTxt.text = "Charge: FULL";
+        }
+        else
+        {
+            chargeTxt.text = "Charge: EMPTY";
+        }
     }
 
     private void Movement()
