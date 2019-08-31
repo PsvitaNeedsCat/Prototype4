@@ -116,14 +116,16 @@ public class PlayerScript : MonoBehaviour
         // Collided with base
         if (collision.collider.tag == "Base")
         {
+            BaseScript collidedScript = collision.collider.GetComponent<BaseScript>();
+
             // On same team
-            if (collision.collider.GetComponent<BaseScript>().team == team)
+            if (collidedScript.team == team)
             {
                 // If player has some score to bank
                 if (score != 0)
                 {
                     // Bank score
-                    collision.collider.GetComponent<BaseScript>().totalScore += score;
+                    collidedScript.totalScore += score;
 
                     // Empty score
                     score = 0;
@@ -132,8 +134,18 @@ public class PlayerScript : MonoBehaviour
             // Enemy base
             else
             {
-                // Take 10% of enemy points
+                // Check if fast enough
+                if (playerBody.velocity.magnitude >= breakSpeed)
+                {
+                    // Take 10% of enemy points
+                    int stolenScore = (int)Mathf.Ceil(collidedScript.totalScore * 0.10f);
 
+                    // Remove score from base
+                    collidedScript.totalScore -= stolenScore;
+
+                    // Add score to player's bank
+                    score += stolenScore;
+                }
             }
         }
 
