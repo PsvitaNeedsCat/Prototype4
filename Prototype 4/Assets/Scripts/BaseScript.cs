@@ -6,6 +6,6 @@ public class BaseScript : MonoBehaviour
 {
     // Public
     public PlayerScript.TeamColour team;
-
+    public int totalScore = 0;
 
 }
