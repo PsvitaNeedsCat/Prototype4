@@ -92,7 +92,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 51f5a0da5056d2541b03e2756d353e97, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1c54a82a3f3f8ae42bf04ebf5acdd93b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -133,3 +133,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerNo: 1
   team: 0
+  score: 0
+  chargeMeter: 2
+  chargeFull: 2
