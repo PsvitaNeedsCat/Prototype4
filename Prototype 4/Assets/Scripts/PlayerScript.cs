@@ -13,6 +13,7 @@ public class PlayerScript : MonoBehaviour
         YELLOW
     }
     public TeamColour team;
+    public int score = 0;
 
     // Private
     private float speed = 300.0f;
@@ -22,9 +23,7 @@ public class PlayerScript : MonoBehaviour
     private Vector3 forceVector = new Vector3(0.0f, 0.0f, 0.0f);
     private Rigidbody2D playerBody;
     private float breakSpeed = 1.0F;
-    private TextMesh chargeTxt;
     // Score
-    private int score = 0;
     private int largeAsteroidVal = 25;
     private int smallAsteroidVal = 10;
     public float chargeMeter = 2.0F;
@@ -33,11 +32,6 @@ public class PlayerScript : MonoBehaviour
     private void Awake()
     {
         playerBody = this.GetComponent<Rigidbody2D>();
-
-        if (GameObject.Find("ChargeTxt"))
-        {
-            chargeTxt = GameObject.Find("ChargeTxt").GetComponent<TextMesh>();
-        }
     }
 
 
@@ -47,24 +41,9 @@ public class PlayerScript : MonoBehaviour
 
         CheckRotation();
 
-        if (1.0F == Input.GetAxisRaw("Boost") && chargeMeter >= chargeFull) { Charge(); }
+        if (ChargePressed() && chargeMeter >= chargeFull) { Charge(); }
 
         IncreaseChargeMeter();
-
-        UpdateChargeText();
-    }
-
-    // TEMP //
-    private void UpdateChargeText()
-    {
-        if (chargeMeter == chargeFull)
-        {
-            chargeTxt.text = "Charge: FULL";
-        }
-        else
-        {
-            chargeTxt.text = "Charge: EMPTY";
-        }
     }
 
     private void Movement()
@@ -111,6 +90,29 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    private bool ChargePressed()
+    {
+        // Check player number
+        if (playerNo == 1)
+        {
+            // Check if button is pressed
+            if (Input.GetAxisRaw("Boost") == 1.0f)
+            {
+                return true;
+            }
+        }
+        else if (playerNo == 2)
+        {
+            // Check if button is pressed
+            if (Input.GetAxisRaw("Boost2") == 1.0f)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private void IncreaseChargeMeter()
     {
         // Truncate
@@ -130,6 +132,32 @@ public class PlayerScript : MonoBehaviour
         chargeMeter = 0.0F;
         // do the charge
         playerBody.AddForce(this.transform.up.normalized * Time.fixedDeltaTime * speed * 150.0F);
+    }
+
+    public void Kill()
+    {
+        // Reset score
+        score = 0;
+
+        // Reset velocity
+        playerBody.velocity = new Vector2(0.0f, 0.0f);
+
+        // Respawn //
+
+        // Get all bases
+        GameObject[] bases = GameObject.FindGameObjectsWithTag("Base");
+
+        // Check which one has the correct colour
+        for (uint i = 0; i < bases.Length; i++)
+        {
+            // Check if correct base
+            if (bases[i].GetComponent<BaseScript>().team == team)
+            {
+                // Respawn at that base
+                this.transform.position = bases[i].transform.position;
+                break;
+            }
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -187,6 +215,39 @@ public class PlayerScript : MonoBehaviour
                     score += 100;
                 }
                 Destroy(collision.gameObject);
+            }
+        }
+
+        // Collided with another player
+        if (collision.collider.tag == "Player")
+        {
+            // Check if going fast enough
+            if (playerBody.velocity.magnitude >= breakSpeed)
+            {
+                PlayerScript enemy = collision.collider.GetComponent<PlayerScript>();
+
+                // Check if team is different
+                if (enemy.team != team)
+                {
+                    // Check who was faster
+                    if (collision.collider.GetComponent<Rigidbody2D>().velocity.magnitude > playerBody.velocity.magnitude)
+                    {
+                        // Enemy is faster
+                        // Give enemy player score
+                        enemy.score += score;
+
+                        this.Kill();
+                    }
+                    else
+                    {
+                        // This player is faster
+                        // Take enemy player's points
+                        score += enemy.score;
+
+                        // Kill enemy player
+                        enemy.Kill();
+                    }
+                }
             }
         }
     }
