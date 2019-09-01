@@ -160,6 +160,17 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        // Collided with scorebit
+        if (collision.tag == "ScoreBit")
+        {
+            score += collision.gameObject.GetComponent<ScoreBitScript>().score;
+            // Destroy the scoreBit
+            Destroy(collision.gameObject);
+        }
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         // Collided with base
@@ -205,15 +216,8 @@ public class PlayerScript : MonoBehaviour
             if (playerBody.velocity.magnitude >= breakSpeed)
             {
                 AsteroidScript script = collision.gameObject.GetComponent<AsteroidScript>();
+                script.killer = this.gameObject;
                 // Destroy the asteroid.
-                if (script.size == AsteroidScript.AsteroidSize.Small)
-                {
-                    score += 25;
-                }
-                else
-                {
-                    score += 100;
-                }
                 Destroy(collision.gameObject);
             }
         }
