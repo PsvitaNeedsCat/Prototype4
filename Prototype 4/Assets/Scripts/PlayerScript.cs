@@ -22,7 +22,7 @@ public class PlayerScript : MonoBehaviour
     private bool boostInput = false;
     private Vector3 forceVector = new Vector3(0.0f, 0.0f, 0.0f);
     private Rigidbody2D playerBody;
-    private float breakSpeed = 1.0F;
+    private float breakSpeed = 2.0F;
     // Score
     private int largeAsteroidVal = 25;
     private int smallAsteroidVal = 10;
