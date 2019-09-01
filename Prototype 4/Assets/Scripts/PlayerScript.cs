@@ -44,6 +44,20 @@ public class PlayerScript : MonoBehaviour
         if (ChargePressed() && chargeMeter >= chargeFull) { Charge(); }
 
         IncreaseChargeMeter();
+
+        UpdateScoreText();
+    }
+
+    private void UpdateScoreText()
+    {
+        if (playerNo == 1)
+        {
+            GameObject.Find("Player1ScoreDisplay").GetComponent<TextMesh>().text = "Player 1 Score: " + score;
+        }
+        else if (playerNo == 2)
+        {
+            GameObject.Find("Player2ScoreDisplay").GetComponent<TextMesh>().text = "Player 2 Score: " + score;
+        }
     }
 
     private void Movement()

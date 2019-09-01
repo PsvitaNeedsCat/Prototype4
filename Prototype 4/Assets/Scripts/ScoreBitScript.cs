@@ -24,11 +24,11 @@ public class ScoreBitScript : MonoBehaviour
     void Update()
     {
         timeSinceSpawn += Time.deltaTime;
-        if (timeSinceSpawn > 0.3F)
+        if (timeSinceSpawn > 0.4F)
         {
             // accelerate towards player
             Vector3 direction = player.transform.position - this.transform.position;
-            body.AddForce(direction * Time.deltaTime * attractionForce);
+            body.AddForce(direction * Time.deltaTime * attractionForce * timeSinceSpawn);
         }
     }
 }
