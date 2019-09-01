@@ -11,6 +11,8 @@ public class AsteroidScript : MonoBehaviour
         Large
     }
     public AsteroidSize size;
+    public GameObject killer;
+    public GameObject scoreTransferBit;
 
     private void Awake()
     {
@@ -21,6 +23,25 @@ public class AsteroidScript : MonoBehaviour
 
             // Set mass
             this.GetComponent<Rigidbody2D>().mass *= 2;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        int numberBits;
+        if (size == AsteroidSize.Small)
+        {
+            numberBits = 3;
+        }
+        else
+        {
+            numberBits = 10;
+        }
+
+        for (int i = 0; i < numberBits; i++)
+        {
+            GameObject scoreBit = Instantiate(scoreTransferBit, this.transform.position, Quaternion.identity);
+            scoreBit.GetComponent<ScoreBitScript>().player = killer;
         }
     }
 }

@@ -13,6 +13,7 @@ public class PlayerScript : MonoBehaviour
         YELLOW
     }
     public TeamColour team;
+    public int score = 0;
 
     // Private
     private float speed = 300.0f;
@@ -21,9 +22,8 @@ public class PlayerScript : MonoBehaviour
     private bool boostInput = false;
     private Vector3 forceVector = new Vector3(0.0f, 0.0f, 0.0f);
     private Rigidbody2D playerBody;
-    private float breakSpeed = 1.0F;
+    private float breakSpeed = 2.0F;
     // Score
-    private int score = 0;
     private int largeAsteroidVal = 25;
     private int smallAsteroidVal = 10;
     public float chargeMeter = 2.0F;
@@ -41,9 +41,23 @@ public class PlayerScript : MonoBehaviour
 
         CheckRotation();
 
-        if (1.0F == Input.GetAxisRaw("Boost") && chargeMeter >= chargeFull) { Charge(); }
+        if (ChargePressed() && chargeMeter >= chargeFull) { Charge(); }
 
         IncreaseChargeMeter();
+
+        UpdateScoreText();
+    }
+
+    private void UpdateScoreText()
+    {
+        if (playerNo == 1)
+        {
+            GameObject.Find("Player1ScoreDisplay").GetComponent<TextMesh>().text = "Player 1 Score: " + score;
+        }
+        else if (playerNo == 2)
+        {
+            GameObject.Find("Player2ScoreDisplay").GetComponent<TextMesh>().text = "Player 2 Score: " + score;
+        }
     }
 
     private void Movement()
@@ -90,6 +104,29 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    private bool ChargePressed()
+    {
+        // Check player number
+        if (playerNo == 1)
+        {
+            // Check if button is pressed
+            if (Input.GetAxisRaw("Boost") == 1.0f)
+            {
+                return true;
+            }
+        }
+        else if (playerNo == 2)
+        {
+            // Check if button is pressed
+            if (Input.GetAxisRaw("Boost2") == 1.0f)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private void IncreaseChargeMeter()
     {
         // Truncate
@@ -111,15 +148,78 @@ public class PlayerScript : MonoBehaviour
         playerBody.AddForce(this.transform.up.normalized * Time.fixedDeltaTime * speed * 150.0F);
     }
 
+    public void Kill()
+    {
+        // Reset score
+        score = 0;
+
+        // Reset velocity
+        playerBody.velocity = new Vector2(0.0f, 0.0f);
+
+        // Respawn //
+
+        // Get all bases
+        GameObject[] bases = GameObject.FindGameObjectsWithTag("Base");
+
+        // Check which one has the correct colour
+        for (uint i = 0; i < bases.Length; i++)
+        {
+            // Check if correct base
+            if (bases[i].GetComponent<BaseScript>().team == team)
+            {
+                // Respawn at that base
+                this.transform.position = bases[i].transform.position;
+                break;
+            }
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        // Collided with scorebit
+        if (collision.tag == "ScoreBit")
+        {
+            score += collision.gameObject.GetComponent<ScoreBitScript>().score;
+            // Destroy the scoreBit
+            Destroy(collision.gameObject);
+        }
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         // Collided with base
         if (collision.collider.tag == "Base")
         {
-            // On same team
-            if (collision.collider.GetComponent<BaseScript>().team == team)
-            {
+            BaseScript collidedScript = collision.collider.GetComponent<BaseScript>();
 
+            // On same team
+            if (collidedScript.team == team)
+            {
+                // If player has some score to bank
+                if (score != 0)
+                {
+                    // Bank score
+                    collidedScript.totalScore += score;
+
+                    // Empty score
+                    score = 0;
+                }
+            }
+            // Enemy base
+            else
+            {
+                // Check if fast enough
+                if (playerBody.velocity.magnitude >= breakSpeed)
+                {
+                    // Take 10% of enemy points
+                    int stolenScore = (int)Mathf.Ceil(collidedScript.totalScore * 0.10f);
+
+                    // Remove score from base
+                    collidedScript.totalScore -= stolenScore;
+
+                    // Add score to player's bank
+                    score += stolenScore;
+                }
             }
         }
 
@@ -130,16 +230,42 @@ public class PlayerScript : MonoBehaviour
             if (playerBody.velocity.magnitude >= breakSpeed)
             {
                 AsteroidScript script = collision.gameObject.GetComponent<AsteroidScript>();
+                script.killer = this.gameObject;
                 // Destroy the asteroid.
-                if (script.size == AsteroidScript.AsteroidSize.Small)
-                {
-                    score += 25;
-                }
-                else
-                {
-                    score += 100;
-                }
                 Destroy(collision.gameObject);
+            }
+        }
+
+        // Collided with another player
+        if (collision.collider.tag == "Player")
+        {
+            // Check if going fast enough
+            if (playerBody.velocity.magnitude >= breakSpeed)
+            {
+                PlayerScript enemy = collision.collider.GetComponent<PlayerScript>();
+
+                // Check if team is different
+                if (enemy.team != team)
+                {
+                    // Check who was faster
+                    if (collision.collider.GetComponent<Rigidbody2D>().velocity.magnitude > playerBody.velocity.magnitude)
+                    {
+                        // Enemy is faster
+                        // Give enemy player score
+                        enemy.score += score;
+
+                        this.Kill();
+                    }
+                    else
+                    {
+                        // This player is faster
+                        // Take enemy player's points
+                        score += enemy.score;
+
+                        // Kill enemy player
+                        enemy.Kill();
+                    }
+                }
             }
         }
     }
