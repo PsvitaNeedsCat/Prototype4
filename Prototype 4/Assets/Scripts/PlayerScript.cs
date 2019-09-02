@@ -14,6 +14,11 @@ public class PlayerScript : MonoBehaviour
     }
     public TeamColour team;
     public int score = 0;
+    Vector2 previousVelocity = new Vector2(0.0f, 0.0f);
+    public float chargeMeter = 2.0F;
+    public float chargeFull = 2.0F;
+    public GameObject scoreTransferBit;
+    public GameObject killer;
 
     // Private
     private float speed = 300.0f;
@@ -26,8 +31,6 @@ public class PlayerScript : MonoBehaviour
     // Score
     private int largeAsteroidVal = 25;
     private int smallAsteroidVal = 10;
-    public float chargeMeter = 2.0F;
-    public float chargeFull = 2.0F;
 
     private void Awake()
     {
@@ -37,6 +40,9 @@ public class PlayerScript : MonoBehaviour
 
     private void FixedUpdate()
     {
+        // Update velocity
+        previousVelocity = playerBody.velocity;
+
         Movement();
 
         CheckRotation();
@@ -150,8 +156,18 @@ public class PlayerScript : MonoBehaviour
 
     public void Kill()
     {
-        // Reset score
-        score = 0;
+        if (score != 0)
+        {
+            uint numberBits = (uint)(score / 10);
+
+            for (uint i = 0; i < numberBits; i++)
+            {
+                GameObject scoreBit = Instantiate(scoreTransferBit, this.transform.position, Quaternion.identity);
+                scoreBit.GetComponent<ScoreBitScript>().player = killer;
+            }
+
+            score = 0;
+        }
 
         // Reset velocity
         playerBody.velocity = new Vector2(0.0f, 0.0f);
@@ -209,7 +225,7 @@ public class PlayerScript : MonoBehaviour
             else
             {
                 // Check if fast enough
-                if (playerBody.velocity.magnitude >= breakSpeed)
+                if (previousVelocity.magnitude >= breakSpeed)
                 {
                     // Take 10% of enemy points
                     int stolenScore = (int)Mathf.Ceil(collidedScript.totalScore * 0.10f);
@@ -227,7 +243,7 @@ public class PlayerScript : MonoBehaviour
         if (collision.collider.tag == "Asteroid")
         {
             // On same team
-            if (playerBody.velocity.magnitude >= breakSpeed)
+            if (previousVelocity.magnitude >= breakSpeed)
             {
                 AsteroidScript script = collision.gameObject.GetComponent<AsteroidScript>();
                 script.killer = this.gameObject;
@@ -239,32 +255,40 @@ public class PlayerScript : MonoBehaviour
         // Collided with another player
         if (collision.collider.tag == "Player")
         {
-            // Check if going fast enough
-            if (playerBody.velocity.magnitude >= breakSpeed)
+            // Save enemy script
+            PlayerScript enemyScript = collision.collider.GetComponent<PlayerScript>();
+
+            // Save velocity
+            Vector2 enemyVelocity = enemyScript.previousVelocity;
+
+            // Check teams
+            if (enemyScript.team != team)
             {
-                PlayerScript enemy = collision.collider.GetComponent<PlayerScript>();
-
-                // Check if team is different
-                if (enemy.team != team)
+                if (previousVelocity.magnitude >= breakSpeed && enemyVelocity.magnitude >= breakSpeed)
                 {
-                    // Check who was faster
-                    if (collision.collider.GetComponent<Rigidbody2D>().velocity.magnitude > playerBody.velocity.magnitude)
+                    if (previousVelocity.magnitude > enemyVelocity.magnitude)
                     {
-                        // Enemy is faster
-                        // Give enemy player score
-                        enemy.score += score;
-
-                        this.Kill();
+                        // This player wins
+                        enemyScript.killer = this.gameObject;
+                        enemyScript.Kill();
                     }
                     else
                     {
-                        // This player is faster
-                        // Take enemy player's points
-                        score += enemy.score;
-
-                        // Kill enemy player
-                        enemy.Kill();
+                        killer = collision.collider.gameObject;
+                        this.Kill();
                     }
+                }
+
+                else if (previousVelocity.magnitude >= breakSpeed)
+                {
+                    enemyScript.killer = this.gameObject;
+                    enemyScript.Kill();
+                }
+
+                else if (enemyVelocity.magnitude >= breakSpeed)
+                {
+                    killer = collision.collider.gameObject;
+                    this.Kill();
                 }
             }
         }
