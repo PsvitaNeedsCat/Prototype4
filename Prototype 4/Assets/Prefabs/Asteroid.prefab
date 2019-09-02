@@ -119,6 +119,8 @@ MonoBehaviour:
   killer: {fileID: 0}
   scoreTransferBit: {fileID: 4276779019280325861, guid: fe6ce2c05301c63409afdcb8a03b3610,
     type: 3}
+  smallSprite: {fileID: 21300000, guid: 441fb3c3ef4adf44fa0aa1d10a6222cf, type: 3}
+  largeSprite: {fileID: 21300000, guid: 9c1a3d9668866124ebf641d066aad32d, type: 3}
 --- !u!58 &6195982654715620280
 CircleCollider2D:
   m_ObjectHideFlags: 0

@@ -13,6 +13,9 @@ public class AsteroidScript : MonoBehaviour
     public AsteroidSize size;
     public GameObject killer;
     public GameObject scoreTransferBit;
+    // Sprites
+    public Sprite smallSprite;
+    public Sprite largeSprite;
 
     private void Awake()
     {
@@ -23,6 +26,16 @@ public class AsteroidScript : MonoBehaviour
 
             // Set mass
             this.GetComponent<Rigidbody2D>().mass *= 2;
+        }
+
+        // Set sprite
+        if (size == AsteroidSize.Small)
+        {
+            this.GetComponent<SpriteRenderer>().sprite = smallSprite;
+        }
+        else
+        {
+            this.GetComponent<SpriteRenderer>().sprite = largeSprite;
         }
     }
 

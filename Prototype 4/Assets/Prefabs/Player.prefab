@@ -136,3 +136,6 @@ MonoBehaviour:
   score: 0
   chargeMeter: 2
   chargeFull: 2
+  scoreTransferBit: {fileID: 4276779019280325861, guid: fe6ce2c05301c63409afdcb8a03b3610,
+    type: 3}
+  killer: {fileID: 0}
