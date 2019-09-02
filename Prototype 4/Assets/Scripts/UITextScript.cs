@@ -8,6 +8,7 @@ public class UITextScript : MonoBehaviour
     //Central Text Variables
     public Text centText;
     public int centState = 0;
+    private Animator centAnim;
 
     //TEST VARIABLES, FEEL FREE TO DELETE AND HOOK UP THE ACTUAL VARIABLES
     public float testTimer = 50.0f;
@@ -16,6 +17,7 @@ public class UITextScript : MonoBehaviour
     void Start()
     {
         centText.text = "";
+        centAnim = centText.GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -32,11 +34,13 @@ public class UITextScript : MonoBehaviour
         {
             case 0:
                 centText.text = "";
+                centAnim.SetBool("Bounce", false);
                 break;
 
             case 1:
                 centText.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
                 centText.text = "START MATCH?";
+                centAnim.SetBool("Bounce", true);
                 break;
 
             case 2:
@@ -47,6 +51,7 @@ public class UITextScript : MonoBehaviour
                 centText.color = new Color(1.0f, 1.0f, 1.0f, 0.2f);
                 string timer = testTimer.ToString("F0");        //F0 ensure no decimals are shown
                 centText.text = timer;
+                centAnim.SetBool("Bounce", false);
                 break;
         }
     }
