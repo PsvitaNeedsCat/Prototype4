@@ -14,11 +14,9 @@ public class PlayerScript : MonoBehaviour
     }
     public TeamColour team;
     public int score = 0;
-    Vector2 previousVelocity = new Vector2(0.0f, 0.0f);
-    public float chargeMeter = 2.0F;
-    public float chargeFull = 2.0F;
     public GameObject scoreTransferBit;
     public GameObject killer;
+    public Vector2 previousVelocity = new Vector2(0.0f, 0.0f);
 
     // Private
     private float speed = 300.0f;
@@ -27,10 +25,12 @@ public class PlayerScript : MonoBehaviour
     private bool boostInput = false;
     private Vector3 forceVector = new Vector3(0.0f, 0.0f, 0.0f);
     private Rigidbody2D playerBody;
-    private float breakSpeed = 2.0F;
+    private float breakSpeed = 1.5F;
     // Score
     private int largeAsteroidVal = 25;
     private int smallAsteroidVal = 10;
+    public float chargeMeter = 5.0F;
+    public float chargeFull = 5.0F;
 
     private void Awake()
     {
@@ -47,23 +47,9 @@ public class PlayerScript : MonoBehaviour
 
         CheckRotation();
 
-        if (ChargePressed() && chargeMeter >= chargeFull) { Charge(); }
+        //if (ChargePressed() && chargeMeter >= chargeFull) { Charge(); }
 
         IncreaseChargeMeter();
-
-        UpdateScoreText();
-    }
-
-    private void UpdateScoreText()
-    {
-        if (playerNo == 1)
-        {
-            GameObject.Find("Player1ScoreDisplay").GetComponent<TextMesh>().text = "Player 1 Score: " + score;
-        }
-        else if (playerNo == 2)
-        {
-            GameObject.Find("Player2ScoreDisplay").GetComponent<TextMesh>().text = "Player 2 Score: " + score;
-        }
     }
 
     private void Movement()
@@ -82,7 +68,16 @@ public class PlayerScript : MonoBehaviour
 
         forceVector = new Vector3(xAxis, yAxis, 0.0f);
 
-        playerBody.AddForce(forceVector.normalized * Time.fixedDeltaTime * speed);
+        
+        if (ChargePressed() && chargeMeter > 0.0F)
+        {
+            playerBody.AddForce(forceVector.normalized * Time.fixedDeltaTime * 10.0F * speed);
+            chargeMeter -= Time.fixedDeltaTime * 10.0F;
+        }
+        else
+        {
+            playerBody.AddForce(forceVector.normalized * Time.fixedDeltaTime * speed);
+        }
     }
 
     private void CheckRotation()
@@ -156,9 +151,10 @@ public class PlayerScript : MonoBehaviour
 
     public void Kill()
     {
+        // Transfer bits
         if (score != 0)
         {
-            uint numberBits = (uint)(score / 10);
+            uint numberBits = (uint)Mathf.Floor(score / 10);
 
             for (uint i = 0; i < numberBits; i++)
             {
@@ -248,7 +244,7 @@ public class PlayerScript : MonoBehaviour
                 AsteroidScript script = collision.gameObject.GetComponent<AsteroidScript>();
                 script.killer = this.gameObject;
                 // Destroy the asteroid.
-                Destroy(collision.gameObject);
+                Destroy(collision.collider.gameObject);
             }
         }
 
