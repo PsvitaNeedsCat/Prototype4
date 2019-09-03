@@ -53,6 +53,24 @@ public class UITextScript : MonoBehaviour
                 centText.text = timer;
                 centAnim.SetBool("Bounce", false);
                 break;
+
+            case 3:
+                centText.color = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+                centText.text = "RED TEAM WINS";
+                centAnim.SetBool("Bounce", true);
+                break;
+
+            case 4:
+                centText.color = new Color(0.25f, 0.75f, 1.0f, 1.0f);
+                centText.text = "BLUE TEAM WINS";
+                centAnim.SetBool("Bounce", true);
+                break;
+
+            case 5:
+                centText.color = new Color(1.0f, 1.0f, 0.0f, 1.0f);
+                centText.text = "YELLOW TEAM WINS";
+                centAnim.SetBool("Bounce", true);
+                break;
         }
     }
 }
