@@ -26,6 +26,15 @@ public class ScoreBitScript : MonoBehaviour
         timeSinceSpawn += Time.deltaTime;
         if (timeSinceSpawn > 0.4F)
         {
+            /*
+            // accelerate towards player
+            Vector3 distance = player.transform.position - this.transform.position;
+            float timeExpected = distance.magnitude / ((Vector3)GetComponent<Rigidbody2D>().velocity).magnitude
+            ;
+            Vector3 direction = (player.transform.position + ((Vector3)player.GetComponent<Rigidbody2D>().velocity * timeExpected)) - this.transform.position;
+            body.AddForce(direction * Time.deltaTime * attractionForce * timeSinceSpawn);
+            */
+
             // accelerate towards player
             Vector3 direction = player.transform.position - this.transform.position;
             body.AddForce(direction * Time.deltaTime * attractionForce * timeSinceSpawn);
