@@ -24,6 +24,36 @@ public class UITextScript : MonoBehaviour
     void Update()
     {
         CentralText();
+
+        if (Input.GetKeyDown(KeyCode.Keypad0))
+        {
+            centState = 0;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Keypad1))
+        {
+            centState = 1;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Keypad2))
+        {
+            centState = 2;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Keypad3))
+        {
+            centState = 3;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Keypad4))
+        {
+            centState = 4;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Keypad5))
+        {
+            centState = 5;
+        }
     }
 
     void CentralText()

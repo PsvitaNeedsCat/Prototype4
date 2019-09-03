@@ -20,6 +20,8 @@ public class PlayerScript : MonoBehaviour
     public GameObject scoreTransferBit;
     public GameObject killer;
 
+    public GameObject scoreText;
+
     // Private
     private float speed = 300.0f;
     private float xAxis = 0.0f;
@@ -42,6 +44,10 @@ public class PlayerScript : MonoBehaviour
     {
         // Update velocity
         previousVelocity = playerBody.velocity;
+
+        //Update score
+        string myScore = score.ToString();
+        scoreText.GetComponent<TextMesh>().text = myScore;
 
         Movement();
 
