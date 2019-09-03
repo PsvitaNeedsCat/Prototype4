@@ -10,34 +10,12 @@ public class AsteroidScript : MonoBehaviour
         Small,
         Large
     }
-    public AsteroidSize size;
+    public AsteroidSize size = AsteroidSize.Small;
     public GameObject killer;
     public GameObject scoreTransferBit;
     // Sprites
-    public Sprite smallSprite;
     public Sprite largeSprite;
-
-    private void Awake()
-    {
-        if (size == AsteroidSize.Large)
-        {
-            // Set scale
-            this.transform.localScale *= 2;
-
-            // Set mass
-            this.GetComponent<Rigidbody2D>().mass *= 2;
-        }
-
-        // Set sprite
-        if (size == AsteroidSize.Small)
-        {
-            this.GetComponent<SpriteRenderer>().sprite = smallSprite;
-        }
-        else
-        {
-            this.GetComponent<SpriteRenderer>().sprite = largeSprite;
-        }
-    }
+    public Vector2 forceVector = new Vector2(0.0f, 0.0f);
 
     private void OnDestroy()
     {
@@ -56,5 +34,29 @@ public class AsteroidScript : MonoBehaviour
             GameObject scoreBit = Instantiate(scoreTransferBit, this.transform.position, Quaternion.identity);
             scoreBit.GetComponent<ScoreBitScript>().player = killer;
         }
+    }
+
+    public void MakeLargeSprite()
+    {
+        this.GetComponent<SpriteRenderer>().sprite = largeSprite;
+
+        // Set scale
+        this.transform.localScale *= 2;
+
+        // Set mass
+        this.GetComponent<Rigidbody2D>().mass *= 2;
+
+        size = AsteroidSize.Large;
+    }
+
+    private void FixedUpdate()
+    {
+        // Move in direction of forceVector
+        this.GetComponent<Rigidbody2D>().AddForce(forceVector);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        forceVector = new Vector2(0.0f, 0.0f);
     }
 }
