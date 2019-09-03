@@ -24,6 +24,36 @@ public class UITextScript : MonoBehaviour
     void Update()
     {
         CentralText();
+
+        if (Input.GetKeyDown(KeyCode.Keypad0))
+        {
+            centState = 0;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Keypad1))
+        {
+            centState = 1;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Keypad2))
+        {
+            centState = 2;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Keypad3))
+        {
+            centState = 3;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Keypad4))
+        {
+            centState = 4;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Keypad5))
+        {
+            centState = 5;
+        }
     }
 
     void CentralText()
@@ -52,6 +82,24 @@ public class UITextScript : MonoBehaviour
                 string timer = testTimer.ToString("F0");        //F0 ensure no decimals are shown
                 centText.text = timer;
                 centAnim.SetBool("Bounce", false);
+                break;
+
+            case 3:
+                centText.color = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+                centText.text = "RED TEAM WINS";
+                centAnim.SetBool("Bounce", true);
+                break;
+
+            case 4:
+                centText.color = new Color(0.25f, 0.75f, 1.0f, 1.0f);
+                centText.text = "BLUE TEAM WINS";
+                centAnim.SetBool("Bounce", true);
+                break;
+
+            case 5:
+                centText.color = new Color(1.0f, 1.0f, 0.0f, 1.0f);
+                centText.text = "YELLOW TEAM WINS";
+                centAnim.SetBool("Bounce", true);
                 break;
         }
     }

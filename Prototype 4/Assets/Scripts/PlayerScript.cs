@@ -18,6 +18,8 @@ public class PlayerScript : MonoBehaviour
     public GameObject killer;
     public Vector2 previousVelocity = new Vector2(0.0f, 0.0f);
 
+    public TextMesh scoreText;
+
     // Private
     private float speed = 300.0f;
     private float xAxis = 0.0f;
@@ -35,6 +37,7 @@ public class PlayerScript : MonoBehaviour
     private void Awake()
     {
         playerBody = this.GetComponent<Rigidbody2D>();
+        scoreText = this.gameObject.GetComponentInChildren<TextMesh>();
     }
 
 
@@ -42,6 +45,10 @@ public class PlayerScript : MonoBehaviour
     {
         // Update velocity
         previousVelocity = playerBody.velocity;
+
+        //Update score
+        string myScore = score.ToString();
+        scoreText.text = myScore;
 
         Movement();
 
