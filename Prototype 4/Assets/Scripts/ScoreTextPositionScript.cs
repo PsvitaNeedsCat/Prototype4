@@ -18,6 +18,6 @@ public class ScoreTextPositionScript : MonoBehaviour
     void Update()
     {
         transform.rotation = rot;
-        transform.position = new Vector3(this.transform.parent.transform.localPosition.x, this.transform.parent.transform.localPosition.y + 0.4f, this.transform.parent.transform.localPosition.z);
+        transform.position = new Vector3(this.transform.parent.transform.localPosition.x, this.transform.parent.transform.localPosition.y + 0.8f, this.transform.parent.transform.localPosition.z);
     }
 }
