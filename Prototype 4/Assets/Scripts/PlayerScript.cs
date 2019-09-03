@@ -25,10 +25,8 @@ public class PlayerScript : MonoBehaviour
     private bool boostInput = false;
     private Vector3 forceVector = new Vector3(0.0f, 0.0f, 0.0f);
     private Rigidbody2D playerBody;
-    private float breakSpeed = 1.5F;
+    private float breakSpeed = 2.0F;
     // Score
-    private int largeAsteroidVal = 25;
-    private int smallAsteroidVal = 10;
     public float chargeMeter = 5.0F;
     public float chargeFull = 5.0F;
 
@@ -229,8 +227,28 @@ public class PlayerScript : MonoBehaviour
                     // Remove score from base
                     collidedScript.totalScore -= stolenScore;
 
-                    // Add score to player's bank
-                    score += stolenScore;
+                    // Big points
+                    for (uint i = 0; i < stolenScore/10; i++)
+                    {
+                        // Spawn bit
+                        GameObject scoreBit = Instantiate(scoreTransferBit, collision.collider.transform.position, Quaternion.identity);
+                        // Push away from player
+                        scoreBit.GetComponent<Rigidbody2D>().AddForce(previousVelocity);
+                        // Make seek player
+                        scoreBit.GetComponent<ScoreBitScript>().player = this.gameObject;
+                    }
+                    // Little points
+                    for (uint i = 0; i < stolenScore%10; i++)
+                    {
+                        // Spawn bit
+                        GameObject scoreBit = Instantiate(scoreTransferBit, collision.collider.transform.position, Quaternion.identity);
+                        // Push away from player
+                        scoreBit.GetComponent<Rigidbody2D>().AddForce(previousVelocity);
+                        // Change value
+                        scoreBit.GetComponent<ScoreBitScript>().score = 1;
+                        // Make seek player
+                        scoreBit.GetComponent<ScoreBitScript>().player = this.gameObject;
+                    }
                 }
             }
         }
