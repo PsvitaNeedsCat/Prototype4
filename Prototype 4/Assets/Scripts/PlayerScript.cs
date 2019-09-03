@@ -20,7 +20,7 @@ public class PlayerScript : MonoBehaviour
     public GameObject scoreTransferBit;
     public GameObject killer;
 
-    public GameObject scoreText;
+    public TextMesh scoreText;
 
     // Private
     private float speed = 300.0f;
@@ -37,6 +37,7 @@ public class PlayerScript : MonoBehaviour
     private void Awake()
     {
         playerBody = this.GetComponent<Rigidbody2D>();
+        scoreText = this.gameObject.GetComponentInChildren<TextMesh>();
     }
 
 
@@ -47,7 +48,7 @@ public class PlayerScript : MonoBehaviour
 
         //Update score
         string myScore = score.ToString();
-        scoreText.GetComponent<TextMesh>().text = myScore;
+        scoreText.text = myScore;
 
         Movement();
 
