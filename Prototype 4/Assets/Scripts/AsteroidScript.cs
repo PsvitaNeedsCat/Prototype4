@@ -14,8 +14,8 @@ public class AsteroidScript : MonoBehaviour
     public GameObject killer;
     public GameObject scoreTransferBit;
     // Sprites
-    public Sprite smallSprite;
     public Sprite largeSprite;
+    public Vector2 forceVector = new Vector2(0.0f, 0.0f);
 
     public void MakeLarge()
     {
@@ -28,6 +28,17 @@ public class AsteroidScript : MonoBehaviour
         this.GetComponent<SpriteRenderer>().sprite = largeSprite;
 
         size = AsteroidSize.Large;
+    }
+
+    private void FixedUpdate()
+    {
+        // Add force
+        this.GetComponent<Rigidbody2D>().AddForce(forceVector);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        forceVector = new Vector2(0.0f, 0.0f);
     }
 
     private void OnDestroy()
