@@ -24,6 +24,7 @@ public class PlayerScript : MonoBehaviour
     public AudioSource scoreCollectedFx; // When score is collected
     public AudioSource scoreBankedFx; // When score is successfully banked
     public AudioSource stationAttackedFx; // When station points are stolen
+    public AudioSource playerKilledFx; // When the player is charged into
 
     // Private
     private float speed = 300.0f;
@@ -32,7 +33,7 @@ public class PlayerScript : MonoBehaviour
     private bool boostInput = false;
     private Vector3 forceVector = new Vector3(0.0f, 0.0f, 0.0f);
     private Rigidbody2D playerBody;
-    private float breakSpeed = 1.5F;
+    private float breakSpeed = 2.0F;
     // Score
     private int largeAsteroidVal = 25;
     private int smallAsteroidVal = 10;
@@ -257,7 +258,11 @@ public class PlayerScript : MonoBehaviour
                 // If player has some score to bank
                 if (score != 0)
                 {
+                    // Play sound
                     scoreBankedFx.Play();
+
+                    // Play particles
+                    collision.collider.GetComponent<BaseScript>().PlayParticles();
 
                     // Bank score
                     collidedScript.totalScore += score;
@@ -347,6 +352,7 @@ public class PlayerScript : MonoBehaviour
                     }
                     else
                     {
+                        playerKilledFx.Play();
                         killer = collision.collider.gameObject;
                         this.Kill();
                     }
@@ -360,6 +366,7 @@ public class PlayerScript : MonoBehaviour
 
                 else if (enemyVelocity.magnitude >= breakSpeed)
                 {
+                    playerKilledFx.Play();
                     killer = collision.collider.gameObject;
                     this.Kill();
                 }
