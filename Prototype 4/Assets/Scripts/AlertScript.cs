@@ -30,6 +30,7 @@ public class AlertScript : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+
         if (active)
         {
             fullalert.SetActive(true);
@@ -49,22 +50,22 @@ public class AlertScript : MonoBehaviour
         switch (baseAtt)
         {
             case 0:
-                scroll.color = new Color(1.0f, 0.0f, 0.0f, 1.0f);
-                alertBG.color = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+                scroll.color = new Color(1.0f, 0.0f, 0.0f, 0.5f);
+                alertBG.color = new Color(1.0f, 0.0f, 0.0f, 0.5f);
                 alert.text = "RED BASE UNDER ATTACK";
                 countdown = true;
                 break;
 
             case 1:
-                scroll.color = new Color(0.25f, 0.75f, 1.0f, 1.0f);
-                alertBG.color = new Color(0.25f, 0.75f, 1.0f, 1.0f);
+                scroll.color = new Color(0.25f, 0.75f, 1.0f, 0.5f);
+                alertBG.color = new Color(0.25f, 0.75f, 1.0f, 0.5f);
                 alert.text = "BLUE BASE UNDER ATTACK";
                 countdown = true;
                 break;
 
             case 2:
-                scroll.color = new Color(1.0f, 1.0f, 0.0f, 1.0f);
-                alertBG.color = new Color(1.0f, 1.0f, 0.0f, 1.0f);
+                scroll.color = new Color(1.0f, 0.7f, 0.0f, 0.5f);
+                alertBG.color = new Color(1.0f, 0.7f, 0.0f, 0.5f);
                 alert.text = "YELLOW BASE UNDER ATTACK";
                 countdown = true;
                 break;

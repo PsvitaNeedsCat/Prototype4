@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using UnityEngine.SceneManagement;
+
 public class PlayerScript : MonoBehaviour
 {
     // Public
@@ -51,6 +53,11 @@ public class PlayerScript : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            SceneManager.LoadScene("Menu");
+        }
+
         // Update velocity
         previousVelocity = playerBody.velocity;
 
@@ -289,6 +296,36 @@ public class PlayerScript : MonoBehaviour
 
                     if (collidedScript.totalScore != 0)
                     {
+                        AlertScript alertObj = GameObject.Find("Alert").GetComponent<AlertScript>();
+
+                        // Alert other players
+                        switch (collidedScript.team)
+                        {
+                            case TeamColour.BLUE:
+                                {
+                                    alertObj.baseAtt = 1;
+                                    alertObj.active = true;
+                                    break;
+                                }
+
+                            case TeamColour.RED:
+                                {
+                                    alertObj.baseAtt = 0;
+                                    alertObj.active = true;
+                                    break;
+                                }
+
+                            case TeamColour.YELLOW:
+                                {
+                                    alertObj.baseAtt = 2;
+                                    alertObj.active = true;
+                                    break;
+                                }
+
+                            default:
+                                break;
+                        }
+
                         // Take 10% of enemy points
                         int stolenScore = (int)Mathf.Ceil(collidedScript.totalScore * 0.10f);
 
