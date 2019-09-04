@@ -10,6 +10,8 @@ public class ScoreBitScript : MonoBehaviour
     public float spawnForce = 5000.0F;
     public Rigidbody2D body;
     public int score = 10;
+    private float acceleration = 0.1f;
+    private float speed = 0.5f;
 
     void Awake()
     {
@@ -26,18 +28,12 @@ public class ScoreBitScript : MonoBehaviour
         timeSinceSpawn += Time.deltaTime;
         if (timeSinceSpawn > 0.4F)
         {
-            /*
-            // accelerate towards player
-            Vector3 distance = player.transform.position - this.transform.position;
-            float timeExpected = distance.magnitude / ((Vector3)GetComponent<Rigidbody2D>().velocity).magnitude
-            ;
-            Vector3 direction = (player.transform.position + ((Vector3)player.GetComponent<Rigidbody2D>().velocity * timeExpected)) - this.transform.position;
-            body.AddForce(direction * Time.deltaTime * attractionForce * timeSinceSpawn);
-            */
+            // Increase speed
+            speed += acceleration;
 
-            // accelerate towards player
-            Vector3 direction = player.transform.position - this.transform.position;
-            body.AddForce(direction * Time.deltaTime * attractionForce * timeSinceSpawn);
+            Vector2 direction = player.transform.position - this.transform.position;
+
+            body.velocity = direction.normalized * speed;
         }
     }
 }

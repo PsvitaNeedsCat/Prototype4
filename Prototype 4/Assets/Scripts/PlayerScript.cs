@@ -24,6 +24,9 @@ public class PlayerScript : MonoBehaviour
     public AudioSource scoreCollectedFx; // When score is collected
     public AudioSource scoreBankedFx; // When score is successfully banked
     public AudioSource stationAttackedFx; // When station points are stolen
+    public AudioSource playerKilledFx; // When the player is charged into
+    // Particles
+    public GameObject deathParticles;
 
     // Private
     private float speed = 300.0f;
@@ -32,7 +35,7 @@ public class PlayerScript : MonoBehaviour
     private bool boostInput = false;
     private Vector3 forceVector = new Vector3(0.0f, 0.0f, 0.0f);
     private Rigidbody2D playerBody;
-    private float breakSpeed = 1.5F;
+    private float breakSpeed = 2.0F;
     // Score
     private int largeAsteroidVal = 25;
     private int smallAsteroidVal = 10;
@@ -195,6 +198,8 @@ public class PlayerScript : MonoBehaviour
 
     public void Kill()
     {
+        Instantiate(deathParticles, this.transform.position, Quaternion.identity);
+
         // Transfer bits
         if (score != 0)
         {
@@ -257,7 +262,11 @@ public class PlayerScript : MonoBehaviour
                 // If player has some score to bank
                 if (score != 0)
                 {
+                    // Play sound
                     scoreBankedFx.Play();
+
+                    // Play particles
+                    collision.collider.GetComponent<BaseScript>().PlayParticles();
 
                     // Bank score
                     collidedScript.totalScore += score;
@@ -278,33 +287,33 @@ public class PlayerScript : MonoBehaviour
                         stationAttackedFx.Play();
                     }
 
-                    // Take 10% of enemy points
-                    int stolenScore = (int)Mathf.Ceil(collidedScript.totalScore * 0.10f);
-
-                    // Remove score from base
-                    collidedScript.totalScore -= stolenScore;
-
-                    // Large
-                    for (uint i = 0; i < stolenScore; i++)
+                    if (collidedScript.totalScore != 0)
                     {
-                        // Spawn points
-                        GameObject scoreBit = Instantiate(scoreTransferBit, collision.collider.transform.position, Quaternion.identity);
-                        scoreBit.GetComponent<ScoreBitScript>().player = this.gameObject;
-                        scoreBit.GetComponent<Rigidbody2D>().AddForce(previousVelocity);
-                    }
+                        // Take 10% of enemy points
+                        int stolenScore = (int)Mathf.Ceil(collidedScript.totalScore * 0.10f);
 
-                    // Small
-                    for (uint i = 0; i < stolenScore%10; i++)
-                    {
-                        // Spawn points
-                        GameObject scoreBit = Instantiate(scoreTransferBit, collision.collider.transform.position, Quaternion.identity);
-                        scoreBit.GetComponent<ScoreBitScript>().player = this.gameObject;
-                        scoreBit.GetComponent<ScoreBitScript>().score = 1;
-                        scoreBit.GetComponent<Rigidbody2D>().AddForce(previousVelocity);
-                    }
+                        // Remove score from base
+                        collidedScript.totalScore -= stolenScore;
 
-                    // Add score to player's bank
-                    score += stolenScore;
+                        // Large
+                        for (uint i = 0; i < stolenScore/10; i++)
+                        {
+                            // Spawn points
+                            GameObject scoreBit = Instantiate(scoreTransferBit, collision.collider.transform.position, Quaternion.identity);
+                            scoreBit.GetComponent<ScoreBitScript>().player = this.gameObject;
+                            scoreBit.GetComponent<Rigidbody2D>().AddForce(previousVelocity);
+                        }
+
+                        // Small
+                        for (uint i = 0; i < stolenScore % 10; i++)
+                        {
+                            // Spawn points
+                            GameObject scoreBit = Instantiate(scoreTransferBit, collision.collider.transform.position, Quaternion.identity);
+                            scoreBit.GetComponent<ScoreBitScript>().player = this.gameObject;
+                            scoreBit.GetComponent<ScoreBitScript>().score = 1;
+                            scoreBit.GetComponent<Rigidbody2D>().AddForce(previousVelocity);
+                        }
+                    }
                 }
             }
         }
@@ -347,6 +356,7 @@ public class PlayerScript : MonoBehaviour
                     }
                     else
                     {
+                        playerKilledFx.Play();
                         killer = collision.collider.gameObject;
                         this.Kill();
                     }
@@ -360,6 +370,7 @@ public class PlayerScript : MonoBehaviour
 
                 else if (enemyVelocity.magnitude >= breakSpeed)
                 {
+                    playerKilledFx.Play();
                     killer = collision.collider.gameObject;
                     this.Kill();
                 }

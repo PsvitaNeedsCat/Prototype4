@@ -17,6 +17,20 @@ public class AsteroidScript : MonoBehaviour
     public Sprite largeSprite;
     public Vector2 forceVector = new Vector2(0.0f, 0.0f);
 
+    private void Awake()
+    {
+        if (size == AsteroidSize.Large)
+        {
+            // Set scale
+            this.transform.localScale *= 2;
+
+            // Set mass
+            this.GetComponent<Rigidbody2D>().mass *= 2;
+
+            this.GetComponent<SpriteRenderer>().sprite = largeSprite;
+        }
+    }
+
     public void MakeLarge()
     {
         // Set scale
@@ -34,6 +48,12 @@ public class AsteroidScript : MonoBehaviour
     {
         // Add force
         this.GetComponent<Rigidbody2D>().AddForce(forceVector);
+
+        // Check if near centre
+        if ((new Vector3(0.0f, 0.0f, 0.0f) - this.transform.position).magnitude <= 0.2f)
+        {
+            forceVector = new Vector2(0.0f, 0.0f);
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

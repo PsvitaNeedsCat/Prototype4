@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6195982654715620284}
   - component: {fileID: 6195982654715620281}
   - component: {fileID: 6195982654715620280}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Asteroid
   m_TagString: Asteroid
   m_Icon: {fileID: 0}
@@ -120,10 +120,9 @@ MonoBehaviour:
   killer: {fileID: 0}
   scoreTransferBit: {fileID: 4276779019280325861, guid: fe6ce2c05301c63409afdcb8a03b3610,
     type: 3}
-  smallSprite: {fileID: -6558460840407876442, guid: f4bbded432f67674498bf9ee5d59703a,
-    type: 3}
   largeSprite: {fileID: 6785167739693211808, guid: 6ffed76d28ebc154cb0ebb3e757551f2,
     type: 3}
+  forceVector: {x: 0, y: 0}
 --- !u!58 &6195982654715620280
 CircleCollider2D:
   m_ObjectHideFlags: 0
