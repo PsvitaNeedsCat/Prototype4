@@ -17,8 +17,13 @@ public class PlayerScript : MonoBehaviour
     public GameObject scoreTransferBit;
     public GameObject killer;
     public Vector2 previousVelocity = new Vector2(0.0f, 0.0f);
-
     public TextMesh scoreText;
+    // Audio
+    public AudioSource boostFx; // When boosting
+    public AudioSource asteroidDestroyedFx; // When an asteroid is destroyed
+    public AudioSource scoreCollectedFx; // When score is collected
+    public AudioSource scoreBankedFx; // When score is successfully banked
+    public AudioSource stationAttackedFx; // When station points are stolen
 
     // Private
     private float speed = 300.0f;
@@ -54,9 +59,42 @@ public class PlayerScript : MonoBehaviour
 
         CheckRotation();
 
-        //if (ChargePressed() && chargeMeter >= chargeFull) { Charge(); }
+        CheckBoostAudio();
 
         IncreaseChargeMeter();
+    }
+
+    private void CheckBoostAudio()
+    {
+        if (playerNo == 1)
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                boostFx.Play();
+            }
+            else if (!Input.GetKey(KeyCode.Space))
+            {
+                if (boostFx.isPlaying)
+                {
+                    boostFx.Stop();
+                }
+            }
+        }
+        else if (playerNo == 2)
+        {
+            // Player 2
+            if (Input.GetKeyDown(KeyCode.RightControl))
+            {
+                boostFx.Play();
+            }
+            else if (!Input.GetKey(KeyCode.RightControl))
+            {
+                if (boostFx.isPlaying)
+                {
+                    boostFx.Stop();
+                }
+            }
+        }
     }
 
     private void Movement()
@@ -131,7 +169,6 @@ public class PlayerScript : MonoBehaviour
                 return true;
             }
         }
-
         return false;
     }
 
@@ -198,6 +235,9 @@ public class PlayerScript : MonoBehaviour
         // Collided with scorebit
         if (collision.tag == "ScoreBit")
         {
+            // Play sound
+            scoreCollectedFx.Play();
+
             score += collision.gameObject.GetComponent<ScoreBitScript>().score;
             // Destroy the scoreBit
             Destroy(collision.gameObject);
@@ -217,6 +257,8 @@ public class PlayerScript : MonoBehaviour
                 // If player has some score to bank
                 if (score != 0)
                 {
+                    scoreBankedFx.Play();
+
                     // Bank score
                     collidedScript.totalScore += score;
 
@@ -230,11 +272,36 @@ public class PlayerScript : MonoBehaviour
                 // Check if fast enough
                 if (previousVelocity.magnitude >= breakSpeed)
                 {
+                    if (collision.collider.GetComponent<BaseScript>().totalScore > 0)
+                    {
+                        // Play sound
+                        stationAttackedFx.Play();
+                    }
+
                     // Take 10% of enemy points
                     int stolenScore = (int)Mathf.Ceil(collidedScript.totalScore * 0.10f);
 
                     // Remove score from base
                     collidedScript.totalScore -= stolenScore;
+
+                    // Large
+                    for (uint i = 0; i < stolenScore; i++)
+                    {
+                        // Spawn points
+                        GameObject scoreBit = Instantiate(scoreTransferBit, collision.collider.transform.position, Quaternion.identity);
+                        scoreBit.GetComponent<ScoreBitScript>().player = this.gameObject;
+                        scoreBit.GetComponent<Rigidbody2D>().AddForce(previousVelocity);
+                    }
+
+                    // Small
+                    for (uint i = 0; i < stolenScore%10; i++)
+                    {
+                        // Spawn points
+                        GameObject scoreBit = Instantiate(scoreTransferBit, collision.collider.transform.position, Quaternion.identity);
+                        scoreBit.GetComponent<ScoreBitScript>().player = this.gameObject;
+                        scoreBit.GetComponent<ScoreBitScript>().score = 1;
+                        scoreBit.GetComponent<Rigidbody2D>().AddForce(previousVelocity);
+                    }
 
                     // Add score to player's bank
                     score += stolenScore;
@@ -248,6 +315,9 @@ public class PlayerScript : MonoBehaviour
             // On same team
             if (previousVelocity.magnitude >= breakSpeed)
             {
+                // Play sound
+                asteroidDestroyedFx.Play();
+
                 AsteroidScript script = collision.gameObject.GetComponent<AsteroidScript>();
                 script.killer = this.gameObject;
                 // Destroy the asteroid.
