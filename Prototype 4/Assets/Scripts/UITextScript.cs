@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+using UnityEngine.SceneManagement;
+
 public class UITextScript : MonoBehaviour
 {
     //Central Text Variables
@@ -10,8 +12,13 @@ public class UITextScript : MonoBehaviour
     public int centState = 0;
     private Animator centAnim;
 
+    public GameObject blueBase;
+    public GameObject redBase;
+    public GameObject yellowBase;
+
     //TEST VARIABLES, FEEL FREE TO DELETE AND HOOK UP THE ACTUAL VARIABLES
     public float testTimer = 50.0f;
+    private bool gameOver = false;
 
     // Start is called before the first frame update
     void Start()
@@ -23,6 +30,31 @@ public class UITextScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        if (testTimer <= 0.0f && !gameOver)
+        {
+            // Get scores
+            int blueScore = blueBase.GetComponent<BaseScript>().totalScore;
+            int redScore = redBase.GetComponent<BaseScript>().totalScore;
+            int yellowScore = yellowBase.GetComponent<BaseScript>().totalScore;
+
+            // Blue won
+            if (Mathf.Max(blueScore, redScore, yellowScore) == blueScore)
+            {
+                centState = 4;
+            }
+            // Red won
+            else if (Mathf.Max(blueScore, redScore, yellowScore) == redScore)
+            {
+                centState = 3;
+            }
+            // Yellow won
+            else
+            {
+                centState = 5;
+            }
+        }
+
         CentralText();
 
         if (Input.GetKeyDown(KeyCode.Keypad0))
