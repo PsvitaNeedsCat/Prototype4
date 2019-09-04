@@ -236,6 +236,25 @@ public class PlayerScript : MonoBehaviour
                     // Remove score from base
                     collidedScript.totalScore -= stolenScore;
 
+                    // Large
+                    for (uint i = 0; i < stolenScore; i++)
+                    {
+                        // Spawn points
+                        GameObject scoreBit = Instantiate(scoreTransferBit, collision.collider.transform.position, Quaternion.identity);
+                        scoreBit.GetComponent<ScoreBitScript>().player = this.gameObject;
+                        scoreBit.GetComponent<Rigidbody2D>().AddForce(previousVelocity);
+                    }
+
+                    // Small
+                    for (uint i = 0; i < stolenScore%10; i++)
+                    {
+                        // Spawn points
+                        GameObject scoreBit = Instantiate(scoreTransferBit, collision.collider.transform.position, Quaternion.identity);
+                        scoreBit.GetComponent<ScoreBitScript>().player = this.gameObject;
+                        scoreBit.GetComponent<ScoreBitScript>().score = 1;
+                        scoreBit.GetComponent<Rigidbody2D>().AddForce(previousVelocity);
+                    }
+
                     // Add score to player's bank
                     score += stolenScore;
                 }

@@ -485,6 +485,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: 978d75deab4a99342aba74aa3f73458c,
         type: 3}
+    - target: {fileID: 8953475258297283041, guid: 0bb7a55875310c640bff2a79b3f15e18,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0bb7a55875310c640bff2a79b3f15e18, type: 3}
 --- !u!1 &393479772
@@ -588,7 +593,7 @@ SpriteRenderer:
   m_Size: {x: 7.0000005, y: 5.0004888}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &393479776
@@ -35708,11 +35713,12 @@ MonoBehaviour:
   playerNo: 1
   team: 0
   score: 0
-  chargeMeter: 2
-  chargeFull: 2
   scoreTransferBit: {fileID: 0}
   killer: {fileID: 0}
+  previousVelocity: {x: 0, y: 0}
   scoreText: {fileID: 0}
+  chargeMeter: 2
+  chargeFull: 2
 --- !u!4 &7421916156619078537
 Transform:
   m_ObjectHideFlags: 0

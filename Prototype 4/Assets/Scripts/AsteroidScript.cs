@@ -10,33 +10,24 @@ public class AsteroidScript : MonoBehaviour
         Small,
         Large
     }
-    public AsteroidSize size;
+    public AsteroidSize size = AsteroidSize.Small;
     public GameObject killer;
     public GameObject scoreTransferBit;
     // Sprites
     public Sprite smallSprite;
     public Sprite largeSprite;
 
-    private void Awake()
+    public void MakeLarge()
     {
-        if (size == AsteroidSize.Large)
-        {
-            // Set scale
-            this.transform.localScale *= 2;
+        // Set scale
+        this.transform.localScale *= 2;
 
-            // Set mass
-            this.GetComponent<Rigidbody2D>().mass *= 2;
-        }
+        // Set mass
+        this.GetComponent<Rigidbody2D>().mass *= 2;
 
-        // Set sprite
-        if (size == AsteroidSize.Small)
-        {
-            this.GetComponent<SpriteRenderer>().sprite = smallSprite;
-        }
-        else
-        {
-            this.GetComponent<SpriteRenderer>().sprite = largeSprite;
-        }
+        this.GetComponent<SpriteRenderer>().sprite = largeSprite;
+
+        size = AsteroidSize.Large;
     }
 
     private void OnDestroy()
