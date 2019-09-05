@@ -1,9 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class UITextScript : MonoBehaviour
 {
@@ -28,7 +27,7 @@ public class UITextScript : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
 
         if (testTimer <= 0.0f && !gameOver)
@@ -86,6 +85,11 @@ public class UITextScript : MonoBehaviour
         {
             centState = 5;
         }
+
+        if (gameOver)
+        {
+            SceneManager.LoadScene("Menu");
+        }
     }
 
     void CentralText()
@@ -118,19 +122,19 @@ public class UITextScript : MonoBehaviour
 
             case 3:
                 centText.color = new Color(1.0f, 0.0f, 0.0f, 1.0f);
-                centText.text = "RED TEAM WINS";
+                centText.text = "RED TEAM WINS \n Press ESC to return";
                 centAnim.SetBool("Bounce", true);
                 break;
 
             case 4:
                 centText.color = new Color(0.25f, 0.75f, 1.0f, 1.0f);
-                centText.text = "BLUE TEAM WINS";
+                centText.text = "BLUE TEAM WINS \n Press ESC to return";
                 centAnim.SetBool("Bounce", true);
                 break;
 
             case 5:
                 centText.color = new Color(1.0f, 1.0f, 0.0f, 1.0f);
-                centText.text = "YELLOW TEAM WINS";
+                centText.text = "YELLOW TEAM WINS \n Press ESC to return";
                 centAnim.SetBool("Bounce", true);
                 break;
         }
